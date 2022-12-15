@@ -7,6 +7,7 @@ import { useWeb3React } from '@web3-react/core';
 import { FC, useEffect, useState } from 'react';
 import useActiveWeb3React from '@hooks/useActiveWeb3React';
 import ItemGridOpensea from './GridOpensea';
+import { TransactionBtn } from '../TransactionBtn/TransactionBtn';
 
 const UserCardContainer = styled.div`
   width: 100%;
@@ -27,12 +28,12 @@ const ConnectButton = styled(Button)<{ name: string }>`
   border: 1px ${colors.grayDark3} solid;
   border-radius: 8px;
   width: 500px;
-  pointer-events: ${(p) => p.name ? 'none' : 'auto'};
+  pointer-events: ${(p) => (p.name ? 'none' : 'auto')};
 
   :hover {
     background-color: ${colors.black1};
     border: none;
-  
+
     span {
       color: ${colors.white};
     }
@@ -40,7 +41,7 @@ const ConnectButton = styled(Button)<{ name: string }>`
 `;
 
 const ButtonTile = styled.span<{ name: string }>`
-  color: ${(p) => p.name ? colors.neutralLight2 : colors.white};
+  color: ${(p) => (p.name ? colors.neutralLight2 : colors.white)};
   font-family: Roboto;
   font-weight: 400;
   font-size: 16px;
@@ -54,10 +55,7 @@ export type UserEthCardProps = {
   clickAccount: () => void;
 };
 
-export const UserEthCardView: FC<UserEthCardProps> = ({
-  name,
-  clickAccount,
-}) => {
+export const UserEthCardView: FC<UserEthCardProps> = ({ name, clickAccount }) => {
   const { error } = useWeb3React();
 
   const [isError, setIsError] = useState(false);
@@ -78,11 +76,13 @@ export const UserEthCardView: FC<UserEthCardProps> = ({
           Accept: 'application/json',
           'Content-Type': 'application/json'
         }
-      }).then((response) => {
-        return response.json();
-      }).then((res) => {
-        setNfts(res.assets);
-      });
+      })
+        .then((response) => {
+          return response.json();
+        })
+        .then((res) => {
+          setNfts(res.assets);
+        });
     }
   }, [account]);
 
@@ -94,15 +94,9 @@ export const UserEthCardView: FC<UserEthCardProps> = ({
     }
   }, [error]);
 
-
   const contentButton = (
     <>
-      <Image
-        src="/images/ethereum-logo.svg"
-        width="15px"
-        height="24px"
-        alt="ethereum-logo"
-      />
+      <Image src="/images/ethereum-logo.svg" width="15px" height="24px" alt="ethereum-logo" />
       <ButtonTile name={name}>{name ? name : 'Ethereum'}</ButtonTile>
     </>
   );
@@ -116,17 +110,22 @@ export const UserEthCardView: FC<UserEthCardProps> = ({
       </UserCardContainer>
       <WalletModal />
       {nfts && (
-        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', justifyContent: 'space-around', maxWidth: '1200px', margin: '0 auto' }}>
-          {nfts.length > 0 && nfts.map((item) => {
-            return (
-              <ItemGridOpensea
-                key={item.id}
-                nftItem={item}
-              />
-            )
-          })}
+        <div
+          style={{
+            display: 'flex',
+            gap: '8px',
+            flexWrap: 'wrap',
+            justifyContent: 'space-around',
+            maxWidth: '1200px',
+            margin: '0 auto'
+          }}>
+          {nfts.length > 0 &&
+            nfts.map((item) => {
+              return <ItemGridOpensea key={item.id} nftItem={item} />;
+            })}
         </div>
       )}
+      <TransactionBtn />
     </>
   );
 };
