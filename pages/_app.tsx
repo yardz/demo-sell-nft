@@ -7,12 +7,21 @@ import { Web3ReactProvider } from '@web3-react/core';
 import { NextComponentType, NextPageContext } from 'next';
 import { AppProps } from 'next/app';
 import Script from 'next/script';
-import React, { Fragment, FunctionComponent, useState } from 'react';
+import React, { Fragment, FunctionComponent, useEffect, useRef, useState } from 'react';
 import { Provider as ReduxProvider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 
 import ApplicationUpdater from '@store/application/updater';
 import Web3ReactManager from '@components/Web3ReactManager';
+
+import { OreId } from 'oreid-js';
+import { OreidProvider } from 'oreid-react';
+import { WebPopup } from 'oreid-webpopup';
+
+const oreId = new OreId({
+  appId: 't_b08a78e045e34a0482821cb1346dbcba',
+  plugins: { popup: WebPopup() }
+});
 
 function App({
   Component,
@@ -45,22 +54,24 @@ function App({
                 <>
                   <ApplicationUpdater />
                   <GlobalProvider>
-                    <Provider>
-                      {loading && !beforeHistoryFromSignCallback ? (
-                        <Layout><h3>trung</h3>
-                        </Layout>
-                      ) : (
-                        <Web3ReactManager>
-                          <Component {...pageProps} />
-                        </Web3ReactManager>
-                      )}
-                    </Provider>
+                    <OreidProvider oreId={oreId}>
+                      <Provider>
+                        {loading && !beforeHistoryFromSignCallback ? (
+                          <Layout>
+                            <h3>trung</h3>
+                          </Layout>
+                        ) : (
+                          <Web3ReactManager>
+                            <Component {...pageProps} />
+                          </Web3ReactManager>
+                        )}
+                      </Provider>
+                    </OreidProvider>
                   </GlobalProvider>
                 </>
               )}
             </PersistGate>
           </ReduxProvider>
-
         </Web3ProviderNetwork>
       </Web3ReactProvider>
     </Fragment>
